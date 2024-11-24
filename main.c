@@ -18,10 +18,13 @@ struct reserve {
   float cost;
 };
 
+void print_reserve(struct reserve);
 void make_reserve(struct reserve*, int*);
 void assign_reserve_date(struct date*, bool);
 void show_reserves(struct reserve*, int);
-
+void cancel_reserve(struct reserve*);
+void search_reserve(struct reserve*);
+void set_reserve_price(struct reserve*);
 
 int main() {
   struct reserve reserves[50];
@@ -42,6 +45,9 @@ int main() {
     if (response == 6) exit = true;
     if (response == 1) make_reserve(reserves, &arr_lenght);
     if (response == 5) show_reserves(reserves, arr_lenght);
+    if (response == 4) search_reserve(reserves);
+    if (response == 3) cancel_reserve(reserves);
+
   } while(!exit);
 
   return 0;
@@ -97,7 +103,65 @@ void show_reserves(struct reserve *reserves, int lenght) {
   int size = (lenght == 0 ? 0 : lenght - 1);
 
   for (int i = 0; i <= size; i++) {
-    printf("[%d] Nombre cliente: %s, Numero de reserva: %d, Fecha de llegada: %d/%d/%d, Fecha de salida: %d/%d/%d, Numero de cuarto: %d, Desayuno: %d, Costo: %2.f\n",
-    i+1, reserves[i].name, reserves[i].id, reserves[i].date_in.day, reserves[i].date_in.month, reserves[i].date_in.year, reserves[i].date_out.day, reserves[i].date_out.month, reserves[i].date_out.year, reserves[i].room_number, reserves[i].continental, reserves[i].cost);
+    printf("[%d] ", i+1);
+    print_reserve(reserves[i]);
   }
+}
+
+void cancel_reserve(struct reserve *reserves) {
+  int id = 0;
+  char name[20];
+  bool founded = false;
+  bool confirmation = false;
+  int confirmation_temp;
+  struct reserve blank_reserve;
+
+  printf("Ingrese el numero de la reserva a cancelar:\n");
+  scanf("%d", &id);
+  printf("Ingrese el nombre de la reserva a cancelar:\n");
+  scanf("%s", name);
+  
+  for (int i = 0; i < 50; i++) {
+    if (reserves[i].id == id && strcmp(reserves[i].name ,name) == 0) {
+      print_reserve(reserves[i]);
+      founded = 1;
+
+      if (founded == true) {
+      printf("Seguro de cancelar la reserva? (0/1):\n");
+      scanf("%d", &confirmation_temp);
+      confirmation = confirmation_temp;
+
+      if (confirmation == true) {
+        reserves[i] = blank_reserve;
+        printf("Reserva cancelada con exito\n");
+      } else {
+        printf("Operacion cancelada\n");
+      }
+    }
+  }
+}
+
+  
+}
+
+void search_reserve(struct reserve *reserves) {
+  int id = 0;
+  char name[20];
+
+  printf("Ingrese el numero de la reserva:\n");
+  scanf("%d", &id);
+  printf("Ingrese el nombre de la reserva:\n");
+  scanf("%s", name);
+  
+  for (int i = 0; i < 50; i++) {
+    if (reserves[i].id == id && strcmp(reserves[i].name ,name) == 0) {
+      print_reserve(reserves[i]);
+    }
+  }
+}
+
+void set_reserve_price(struct reserve *reserve) {}
+
+void print_reserve(struct reserve reserve) {
+  printf("Nombre cliente: %s, Numero de reserva: %d, Fecha de llegada: %d/%d/%d, Fecha de salida: %d/%d/%d, Numero de cuarto: %d, Desayuno: %d, Costo: %2.f\n", reserve.name, reserve.id, reserve.date_in.day, reserve.date_in.month, reserve.date_in.year, reserve.date_out.day, reserve.date_out.month, reserve.date_out.year, reserve.room_number, reserve.continental, reserve.cost);
 }
