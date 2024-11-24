@@ -42,11 +42,11 @@ int main() {
 
     scanf("%d", &response);
 
-    if (response == 6) exit = true;
     if (response == 1) make_reserve(reserves, &arr_lenght);
-    if (response == 5) show_reserves(reserves, arr_lenght);
-    if (response == 4) search_reserve(reserves);
     if (response == 3) cancel_reserve(reserves);
+    if (response == 4) search_reserve(reserves);
+    if (response == 5) show_reserves(reserves, arr_lenght);
+    if (response == 6) exit = true;
 
   } while(!exit);
 
@@ -80,7 +80,7 @@ void make_reserve(struct reserve *reserves, int *lenght) {
   scanf("%d", &new_reserve.room_number);
   printf("Incluye desayuno (0/1):\n");
   scanf("%d", &is_continental);
-  new_reserve.id = *lenght;
+  new_reserve.id = *lenght+1;
 
   // Assign boolean value to continental in struct
   if (is_continental == true) {
@@ -97,6 +97,7 @@ void make_reserve(struct reserve *reserves, int *lenght) {
 
   reserves[*lenght] = new_reserve;
   *lenght += 1;
+  printf("Reserva generada con exito! su id es: %d\n", new_reserve.id);
 }
 
 void show_reserves(struct reserve *reserves, int lenght) {
@@ -148,9 +149,9 @@ void search_reserve(struct reserve *reserves) {
   int id = 0;
   char name[20];
 
-  printf("Ingrese el numero de la reserva:\n");
+  printf("Ingrese el id de la reserva:\n");
   scanf("%d", &id);
-  printf("Ingrese el nombre de la reserva:\n");
+  printf("Ingrese el nombre del cliente:\n");
   scanf("%s", name);
   
   for (int i = 0; i < 50; i++) {
