@@ -29,6 +29,7 @@ void cancel_reserve(struct reserve*, int*);
 int search_reserve(struct reserve*);
 void edit_reserve(struct reserve*);
 void set_reserve_price(struct reserve*);
+void clearsc();
 
 int main() {
   struct reserve reserves[RESERVES_SIZE];
@@ -37,7 +38,7 @@ int main() {
   int arr_lenght = 0;
   
   do {
-    system("clear");
+    clearsc();
     printf("1. Registrar nueva reserva\n");
     printf("2. Modificar reserva\n");
     printf("3. Cancelar reserva\n");
@@ -60,7 +61,7 @@ int main() {
 }
 
 void assign_reserve_date(struct date *reserve_date, bool in_or_out) {
-  system("clear");
+  clearsc();
   char in_out[] = "llegada";
 
   if (in_or_out == false) {
@@ -76,7 +77,7 @@ void assign_reserve_date(struct date *reserve_date, bool in_or_out) {
 }
 
 void make_reserve(struct reserve *reserves, int *lenght) {
-  system("clear");
+  clearsc();
   struct reserve new_reserve;
   struct date in_date;
   struct date out_date;
@@ -144,8 +145,12 @@ void make_reserve(struct reserve *reserves, int *lenght) {
   }
 }
 
+void clearsc() {
+  printf("\033[H\033[J");
+}
+
 void show_reserves(struct reserve *reserves, int lenght) {
-  system("clear");
+  clearsc();
   bool exit = false;
   int exit_temp = 0;
   int size = (lenght == 0 ? 0 : lenght - 1);
@@ -164,7 +169,7 @@ void show_reserves(struct reserve *reserves, int lenght) {
 }
 
 void cancel_reserve(struct reserve *reserves, int *lenght) {
-  system("clear");
+  clearsc();
   int id = 0;
   char name[20];
   bool founded = false;
@@ -204,7 +209,7 @@ void cancel_reserve(struct reserve *reserves, int *lenght) {
 }
 
 int search_reserve(struct reserve *reserves) {
-  system("clear");
+  clearsc();
   int id = 0;
   char name[20];
   int exit_temp = 0;
@@ -249,7 +254,7 @@ void set_reserve_price(struct reserve *reserve) {
 }
 
 void edit_reserve(struct reserve *reserves) {
-  system("clear");
+  clearsc();
   int id = search_reserve(reserves);
   int response = 0;
   int continental_temp;
@@ -282,6 +287,6 @@ void edit_reserve(struct reserve *reserves) {
 }
 
 void print_reserve(struct reserve reserve) {
-  system("clear");
+  clearsc();
   printf("Nombre cliente: %s, Numero de reserva: %d, Fecha de llegada: %d/%d/%d, Fecha de salida: %d/%d/%d, Numero de cuarto: %d, Desayuno: %d, Costo: %2.f\n", reserve.name, reserve.id, reserve.date_in.day, reserve.date_in.month, reserve.date_in.year, reserve.date_out.day, reserve.date_out.month, reserve.date_out.year, reserve.room_number, reserve.continental, reserve.cost);
 }
