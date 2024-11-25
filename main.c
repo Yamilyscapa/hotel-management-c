@@ -30,7 +30,7 @@ void edit_reserve(struct reserve*);
 void set_reserve_price(struct reserve*);
 
 int main() {
-  struct reserve reserves[50];
+  struct reserve reserves[100];
   int response = 0;
   bool exit = false;
   int arr_lenght = 0;
@@ -86,8 +86,10 @@ void make_reserve(struct reserve *reserves, int *lenght) {
 
   printf("Nombre del cliente:\n");
   scanf("%s", new_reserve.name);
-  printf("Numero de habitacion:\n");
-  scanf("%d", &new_reserve.room_number);
+  do{
+    printf("Numero de habitacion (0-100):\n");
+    scanf("%d", &new_reserve.room_number);
+  } while (new_reserve.room_number > 100 || new_reserve.room_number < 0);
   printf("Incluye desayuno (0/1):\n");
   scanf("%d", &is_continental);
   new_reserve.id = id;
@@ -101,6 +103,28 @@ void make_reserve(struct reserve *reserves, int *lenght) {
 
   assign_reserve_date(&in_date, true);
   assign_reserve_date(&out_date, false);
+
+  if (in_date.month > out_date.month || in_date.year > out_date.year) {
+    printf("La fecha de llegada no puede ser despues de la de salida\n");
+    while(!exit) {
+      printf("Continuar (1):");
+      scanf("%d", &exit_temp);
+      exit = exit_temp;
+    }
+
+    assign_reserve_date(&in_date, true);
+    assign_reserve_date(&out_date, false);
+  } else if (in_date.day == out_date.day && in_date.day == out_date.day && in_date.year == out_date.year) {
+    printf("La fecha de salida y de entrada no pueden ser las mismas\n");
+    while(!exit) {
+      printf("Continuar (1):");
+      scanf("%d", &exit_temp);
+      exit = exit_temp;
+    } 
+
+    assign_reserve_date(&in_date, true);
+    assign_reserve_date(&out_date, false);
+  }
 
   new_reserve.date_in = in_date;
   new_reserve.date_out = out_date;
@@ -213,10 +237,10 @@ void set_reserve_price(struct reserve *reserve) {
   int diff_m = (reserve->date_out.month - reserve->date_in.month) * 30.4;
   int diff_y = (reserve->date_out.year - reserve->date_in.year) / 365;
 
-  cost = (diff_d + diff_m + diff_y) * 50;
+  cost = (diff_d + diff_m + diff_y) * RESERVE_COST;
 
   if (reserve->continental == true) { 
-    cost += 25;
+    cost += CONTINENTAL_COST;
   }
 
   reserve->cost = cost;
