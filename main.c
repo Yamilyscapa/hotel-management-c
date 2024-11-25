@@ -2,7 +2,9 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
-#define COST int 50;
+#include <stdlib.h>
+#define RESERVE_COST 50;
+#define CONTINENTAL_COST 25
 
 struct date {
   int day, month, year;
@@ -34,6 +36,7 @@ int main() {
   int arr_lenght = 0;
   
   do {
+    system("clear");
     printf("1. Registrar nueva reserva\n");
     printf("2. Modificar reserva\n");
     printf("3. Cancelar reserva\n");
@@ -56,6 +59,7 @@ int main() {
 }
 
 void assign_reserve_date(struct date *reserve_date, bool in_or_out) {
+  system("clear");
   char in_out[] = "llegada";
 
   if (in_or_out == false) {
@@ -71,10 +75,14 @@ void assign_reserve_date(struct date *reserve_date, bool in_or_out) {
 }
 
 void make_reserve(struct reserve *reserves, int *lenght) {
+  system("clear");
   struct reserve new_reserve;
   struct date in_date;
   struct date out_date;
   int is_continental;
+  int id = *lenght+1;
+  bool exit = false;
+  int exit_temp = 0;
 
   printf("Nombre del cliente:\n");
   scanf("%s", new_reserve.name);
@@ -82,7 +90,7 @@ void make_reserve(struct reserve *reserves, int *lenght) {
   scanf("%d", &new_reserve.room_number);
   printf("Incluye desayuno (0/1):\n");
   scanf("%d", &is_continental);
-  new_reserve.id = *lenght+1;
+  new_reserve.id = id;
 
   // Assign boolean value to continental in struct
   if (is_continental == true) {
@@ -97,33 +105,54 @@ void make_reserve(struct reserve *reserves, int *lenght) {
   new_reserve.date_in = in_date;
   new_reserve.date_out = out_date;
 
+  set_reserve_price(&new_reserve);
+
   reserves[*lenght] = new_reserve;
   *lenght += 1;
+
+
   printf("Reserva generada con exito! su id es: %d\n", new_reserve.id);
+  while(!exit) {
+    printf("Continuar (1):");
+    scanf("%d", &exit_temp);
+    exit = exit_temp;
+  }
 }
 
 void show_reserves(struct reserve *reserves, int lenght) {
+  system("clear");
+  bool exit = false;
+  int exit_temp = 0;
   int size = (lenght == 0 ? 0 : lenght - 1);
 
   for (int i = 0; i <= size; i++) {
+    if (reserves[i].id == 0) continue;
     printf("[%d] ", i+1);
     print_reserve(reserves[i]);
+  }
+
+  while(!exit) {
+    printf("Continuar (1):");
+    scanf("%d", &exit_temp);
+    exit = exit_temp;
   }
 }
 
 void cancel_reserve(struct reserve *reserves) {
+  system("clear");
   int id = 0;
   char name[20];
   bool founded = false;
   bool confirmation = false;
   int confirmation_temp;
-  struct reserve blank_reserve;
 
   printf("Ingrese el numero de la reserva a cancelar:\n");
   scanf("%d", &id);
   printf("Ingrese el nombre de la reserva a cancelar:\n");
   scanf("%s", name);
   
+  int j = 50;
+
   for (int i = 0; i < 50; i++) {
     if (reserves[i].id == id && strcmp(reserves[i].name ,name) == 0) {
       print_reserve(reserves[i]);
@@ -135,21 +164,25 @@ void cancel_reserve(struct reserve *reserves) {
       confirmation = confirmation_temp;
 
       if (confirmation == true) {
-        reserves[i] = blank_reserve;
+        reserves[i] = reserves[j];
+        reserves[i].id = 0;
         printf("Reserva cancelada con exito\n");
       } else {
         printf("Operacion cancelada\n");
       }
     }
   }
+  j--;
 }
 
-  
 }
 
 int search_reserve(struct reserve *reserves) {
+  system("clear");
   int id = 0;
   char name[20];
+  int exit_temp = 0;
+  bool exit = false;
 
   printf("Ingrese el id de la reserva:\n");
   scanf("%d", &id);
@@ -165,12 +198,32 @@ int search_reserve(struct reserve *reserves) {
     }
   }
 
+   while(!exit) {
+    printf("Continuar (1):");
+    scanf("%d", &exit_temp);
+    exit = exit_temp;
+  }
+
   return id-1;
 }
 
-void set_reserve_price(struct reserve *reserve) {}
+void set_reserve_price(struct reserve *reserve) {
+  float cost = 0.0;
+  int diff_d = (reserve->date_out.day - reserve->date_in.day);
+  int diff_m = (reserve->date_out.month - reserve->date_in.month) * 30.4;
+  int diff_y = (reserve->date_out.year - reserve->date_in.year) / 365;
+
+  cost = (diff_d + diff_m + diff_y) * 50;
+
+  if (reserve->continental == true) { 
+    cost += 25;
+  }
+
+  reserve->cost = cost;
+}
 
 void edit_reserve(struct reserve *reserves) {
+  system("clear");
   int id = search_reserve(reserves);
   int response = 0;
   int continental_temp;
@@ -203,5 +256,6 @@ void edit_reserve(struct reserve *reserves) {
 }
 
 void print_reserve(struct reserve reserve) {
+  system("clear");
   printf("Nombre cliente: %s, Numero de reserva: %d, Fecha de llegada: %d/%d/%d, Fecha de salida: %d/%d/%d, Numero de cuarto: %d, Desayuno: %d, Costo: %2.f\n", reserve.name, reserve.id, reserve.date_in.day, reserve.date_in.month, reserve.date_in.year, reserve.date_out.day, reserve.date_out.month, reserve.date_out.year, reserve.room_number, reserve.continental, reserve.cost);
 }
