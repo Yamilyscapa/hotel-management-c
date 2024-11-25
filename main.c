@@ -116,8 +116,8 @@ void make_reserve(struct reserve *reserves, int *lenght) {
   assign_reserve_date(&in_date, true);
   assign_reserve_date(&out_date, false);
 
-  if (in_date.month > out_date.month || in_date.year > out_date.year) {
-    printf("La fecha de llegada no puede ser despues de la de salida\n");
+  if (in_date.month > out_date.month || in_date.year > out_date.year || in_date.year > 12 || out_date.year > 12) {
+    printf("Error en las fechas\n");
     while(!exit) {
       printf("Continuar (1):");
       scanf("%d", &exit_temp);
@@ -145,7 +145,6 @@ void make_reserve(struct reserve *reserves, int *lenght) {
 
   reserves[*lenght] = new_reserve;
   *lenght += 1;
-
 
   printf("Reserva generada con exito! su id es: %d\n", new_reserve.id);
   while(!exit) {
