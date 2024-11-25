@@ -3,8 +3,9 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-#define RESERVE_COST 50;
+#define RESERVE_COST 50
 #define CONTINENTAL_COST 25
+#define RESERVES_SIZE 100
 
 struct date {
   int day, month, year;
@@ -24,13 +25,13 @@ void print_reserve(struct reserve);
 void make_reserve(struct reserve*, int*);
 void assign_reserve_date(struct date*, bool);
 void show_reserves(struct reserve*, int);
-void cancel_reserve(struct reserve*);
+void cancel_reserve(struct reserve*, int*);
 int search_reserve(struct reserve*);
 void edit_reserve(struct reserve*);
 void set_reserve_price(struct reserve*);
 
 int main() {
-  struct reserve reserves[100];
+  struct reserve reserves[RESERVES_SIZE];
   int response = 0;
   bool exit = false;
   int arr_lenght = 0;
@@ -48,7 +49,7 @@ int main() {
 
     if (response == 1) make_reserve(reserves, &arr_lenght);
     if (response == 2) edit_reserve(reserves);
-    if (response == 3) cancel_reserve(reserves);
+    if (response == 3) cancel_reserve(reserves, &arr_lenght);
     if (response == 4) search_reserve(reserves);
     if (response == 5) show_reserves(reserves, arr_lenght);
     if (response == 6) exit = true;
@@ -162,7 +163,7 @@ void show_reserves(struct reserve *reserves, int lenght) {
   }
 }
 
-void cancel_reserve(struct reserve *reserves) {
+void cancel_reserve(struct reserve *reserves, int *lenght) {
   system("clear");
   int id = 0;
   char name[20];
@@ -190,6 +191,7 @@ void cancel_reserve(struct reserve *reserves) {
       if (confirmation == true) {
         reserves[i] = reserves[j];
         reserves[i].id = 0;
+        lenght--;
         printf("Reserva cancelada con exito\n");
       } else {
         printf("Operacion cancelada\n");
@@ -213,11 +215,11 @@ int search_reserve(struct reserve *reserves) {
   printf("Ingrese el nombre del cliente:\n");
   scanf("%s", name);
   
-  for (int i = 0; i < 50; i++) {
+  for (int i = 0; i < RESERVES_SIZE; i++) {
     if (reserves[i].id == id && strcmp(reserves[i].name ,name) == 0) {
       print_reserve(reserves[i]);
-    } else if (i == 50 && id == 0) {
-      printf("Reserva no encntrada\n");
+    } else if (i == RESERVES_SIZE && id == 0) {
+        printf("Reserva no encontrada\n");
       return 0;
     }
   }
