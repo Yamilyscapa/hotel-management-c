@@ -34,7 +34,7 @@ int main() {
   struct reserve reserves[RESERVES_SIZE];
   int response = 0;
   bool exit = false;
-  int arr_lenght = 0;
+  int arr_lenght = 0;  
   
   do {
     clearsc();
@@ -84,13 +84,24 @@ void make_reserve(struct reserve *reserves, int *lenght) {
   int id = *lenght+1;
   bool exit = false;
   int exit_temp = 0;
+  bool room_taken;
 
   printf("Nombre del cliente:\n");
   scanf("%s", new_reserve.name);
-  do{
-    printf("Numero de habitacion (0-100):\n");
+
+  do {
+    printf("Número de habitación (0-100):\n");
     scanf("%d", &new_reserve.room_number);
-  } while (new_reserve.room_number > 100 || new_reserve.room_number < 0);
+    room_taken = false;
+    for (int i = 0; i < RESERVES_SIZE; i++) {
+      if (reserves[i].room_number == new_reserve.room_number && reserves[i].id != 0) {
+        room_taken = true;
+        printf("Error: La habitación %d ya está ocupada. Intente con otra.\n", new_reserve.room_number);
+          break;
+        }
+      }
+    } while (new_reserve.room_number > 100 || new_reserve.room_number < 0 || room_taken);
+
   printf("Incluye desayuno (0/1):\n");
   scanf("%d", &is_continental);
   new_reserve.id = id;
