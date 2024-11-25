@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
-#include <stdlib.h>
 #define RESERVE_COST 50
 #define CONTINENTAL_COST 25
 #define RESERVES_SIZE 100
