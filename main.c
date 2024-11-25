@@ -23,7 +23,8 @@ void make_reserve(struct reserve*, int*);
 void assign_reserve_date(struct date*, bool);
 void show_reserves(struct reserve*, int);
 void cancel_reserve(struct reserve*);
-void search_reserve(struct reserve*);
+int search_reserve(struct reserve*);
+void edit_reserve(struct reserve*);
 void set_reserve_price(struct reserve*);
 
 int main() {
@@ -43,6 +44,7 @@ int main() {
     scanf("%d", &response);
 
     if (response == 1) make_reserve(reserves, &arr_lenght);
+    if (response == 2) edit_reserve(reserves);
     if (response == 3) cancel_reserve(reserves);
     if (response == 4) search_reserve(reserves);
     if (response == 5) show_reserves(reserves, arr_lenght);
@@ -145,7 +147,7 @@ void cancel_reserve(struct reserve *reserves) {
   
 }
 
-void search_reserve(struct reserve *reserves) {
+int search_reserve(struct reserve *reserves) {
   int id = 0;
   char name[20];
 
@@ -157,11 +159,48 @@ void search_reserve(struct reserve *reserves) {
   for (int i = 0; i < 50; i++) {
     if (reserves[i].id == id && strcmp(reserves[i].name ,name) == 0) {
       print_reserve(reserves[i]);
+    } else if (i == 50 && id == 0) {
+      printf("Reserva no encntrada\n");
+      return 0;
     }
   }
+
+  return id-1;
 }
 
 void set_reserve_price(struct reserve *reserve) {}
+
+void edit_reserve(struct reserve *reserves) {
+  int id = search_reserve(reserves);
+  int response = 0;
+  int continental_temp;
+  
+  printf("Que dato desea modificar?\n- fecha de llegada: 1\n- fecha de salida: 2\n- desayuno: 3\n");
+  scanf("%d", &response);
+
+  switch (response) {
+    case 1:
+      assign_reserve_date(&reserves[id].date_in, true);
+      printf("Reserva modificada con exito!\n");
+    break;
+
+    case 2:
+      assign_reserve_date(&reserves[id].date_in, false);
+      printf("Reserva modificada con exito!\n");
+    break;
+
+    case 3:
+      printf("Desea incluir desayuno? (0/1):\n");
+      scanf("%d", &continental_temp);
+      reserves[id].continental = (continental_temp == 0 ? false : true);
+      printf("Reserva modificada con exito!\n");
+    break;
+
+    default:
+      printf("Opcion no valida\n");
+    break;
+  }  
+}
 
 void print_reserve(struct reserve reserve) {
   printf("Nombre cliente: %s, Numero de reserva: %d, Fecha de llegada: %d/%d/%d, Fecha de salida: %d/%d/%d, Numero de cuarto: %d, Desayuno: %d, Costo: %2.f\n", reserve.name, reserve.id, reserve.date_in.day, reserve.date_in.month, reserve.date_in.year, reserve.date_out.day, reserve.date_out.month, reserve.date_out.year, reserve.room_number, reserve.continental, reserve.cost);
